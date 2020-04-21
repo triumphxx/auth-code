@@ -55,6 +55,8 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
                 .resourceIds("res1")
                 .authorizedGrantTypes("authorization_code","refresh_token")
                 .scopes("all")
+                //自动授权
+                .autoApprove(true)
                 .redirectUris("http://localhost:8082/index.html");
     }
 

@@ -14,7 +14,11 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeServic
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+
+import java.util.Arrays;
 
 /**
  * @author:triumphxx
@@ -31,14 +35,24 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     @Autowired
     ClientDetailsService clientDetailsService;
 
+    @Autowired
+    JwtAccessTokenConverter jwtAccessTokenConverter;
+    @Autowired
+    CustomAdditionalInformation customAdditionalInformation;
+
     @Bean
     AuthorizationServerTokenServices tokenServices() {
         DefaultTokenServices services = new DefaultTokenServices();
         services.setClientDetailsService(clientDetailsService);
         services.setSupportRefreshToken(true);
         services.setTokenStore(tokenStore);
-        services.setAccessTokenValiditySeconds(60 * 60 * 2);
-        services.setRefreshTokenValiditySeconds(60 * 60 * 24 * 3);
+        //保存在内存中设置的信息
+//        services.setAccessTokenValiditySeconds(60 * 60 * 2);
+//        services.setRefreshTokenValiditySeconds(60 * 60 * 24 * 3);
+        //保存在jwt中设置的信息
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(jwtAccessTokenConverter, customAdditionalInformation));
+        services.setTokenEnhancer(tokenEnhancerChain);
         return services;
     }
     @Override

@@ -26,11 +26,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
                 .withUser("shang")
-                .password(new BCryptPasswordEncoder().encode("123"))
+                .password(passwordEncoder().encode("123"))
                 .roles("admin")
                 .and()
                 .withUser("triumphxx")
-                .password(new BCryptPasswordEncoder().encode("123"))
+                .password(passwordEncoder().encode("123"))
                 .roles("user");
     }
 
